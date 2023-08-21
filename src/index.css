@@ -599,3 +599,16 @@ button[type="submit"] {
   color: mediumblue;
   cursor: pointer;
 }
+
+@media screen and (max-width: 768px) {
+  /* Apply CSS rules to prevent body overflow */
+  #root {
+    width: auto;
+  }
+  header {
+    width: 320px;
+  }
+  .App {
+    width: 320px;
+  }
+}
