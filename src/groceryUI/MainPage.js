@@ -23,26 +23,26 @@ const MainPage = () => {
     loadList,
     chosenList,
   } = useGList();
+  const GROCERIES_URL = `/groceries/${chosenList.listId}`;
   const { auth, setLocation } = useAuth();
   const accessToken = auth?.accessToken ? auth.accessToken : "";
-
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + accessToken,
+    },
+  };
   //RUNS WHEN PAGE IS LOADED, FETCHES ITEMS
 
   useEffect(() => {
     const fetchItems = async () => {
       //console.log(chosenList.listId);
       setLocation("main-page");
-      try {
-        const response = await fetch(
-          `http://localhost:3500/groceries/${chosenList.listId}`,
-          {
-            headers: {
-              Authorization: "Bearer " + accessToken,
-            },
-          }
-        );
-        const Items = (await response.json()) || [];
 
+      try {
+        const response = await axios.get(GROCERIES_URL, config);
+        console.log(response.data);
+        const Items = response.data || [];
         if (Items) {
           setItems(Items);
         } else {
@@ -68,36 +68,30 @@ const MainPage = () => {
         return console.log("nothing to send");
       } else if (reqType === "PUT") {
         items.map((item) =>
-          fetch(`http://localhost:3500/groceries/${chosenList.listId}`, {
-            method: "PUT",
-            headers: {
-              "Content-type": "application/json; charset=UTF-8",
-              Authorization: "Bearer " + accessToken,
-            },
-            body: JSON.stringify({
+          axios.put(
+            GROCERIES_URL,
+            {
               name: item.name,
               id: item.id,
               checked: `${item.checked}`,
-            }),
-          })
+            },
+            config
+          )
         );
+
         setReqType("");
       } else if (reqType === "POST") {
         setNewItem("");
         setReqType("");
-
-        fetch(`http://localhost:3500/groceries/${chosenList.listId}`, {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-            Authorization: "Bearer " + accessToken,
-          },
-          body: JSON.stringify({
+        axios.post(
+          GROCERIES_URL,
+          {
             name: newItem.name,
             id: newItem.id,
             checked: `${newItem.checked}`,
-          }),
-        });
+          },
+          config
+        );
       } else {
         console.log("Not sure why it reached this log..");
       }
@@ -144,7 +138,12 @@ const MainPage = () => {
 
   const handleDelete = async (id) => {
     const listItems = items.filter((item) => item.id !== id);
-    await fetch(`http://localhost:3500/groceries/${chosenList.listId}`, {
+    await axios.delete(GROCERIES_URL, {
+      data: {
+        id: id,
+      },
+      headers: config.headers,
+    }); /* fetch(`http://localhost:3500/groceries/${chosenList.listId}`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
@@ -153,7 +152,7 @@ const MainPage = () => {
       body: JSON.stringify({
         id: id,
       }),
-    });
+    }); */
     setItems(listItems);
   };
 
