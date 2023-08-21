@@ -95,7 +95,7 @@ const Register = () => {
             {errMsg}
           </p>
           <h1>Register</h1>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} data-netlify="true">
             <label htmlFor="username">
               Username:
               <span className={validName ? "valid" : "hide"}>
