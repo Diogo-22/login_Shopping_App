@@ -4,14 +4,14 @@ import useRefreshToken from "../hooks/useRefreshToken";
 import useAuth from "../hooks/useAuth";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Home from "./Home";
-import { useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const { auth } = useAuth();
   const [persist] = useLocalStorage("persist", false);
-  const navigate = useNavigation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
