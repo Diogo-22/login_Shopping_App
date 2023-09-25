@@ -10,6 +10,7 @@ const AddUser = () => {
   const accessToken = auth?.accessToken ? auth.accessToken : "";
   const [search, setSearch] = useState("");
   const { chosenList } = useGList();
+  const [userAdded, setUserAdded] = useState(false);
   //const userId = auth?.userId;
 
   const USER_URL = `/users/${search}`;
@@ -65,9 +66,16 @@ const AddUser = () => {
       );
       const user = response.data;
       if (response.status === 200) {
-        navigate(from, { replace: true });
+        setUserAdded(true);
+        const goBack = () => {
+          navigate(from, { replace: true });
+          setUserAdded(false);
+        };
+        setTimeout(goBack, 5000);
+        //navigate(from, { replace: true });
+        console.log("trust me bros");
       }
-      navigate("/");
+      //navigate("/");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -94,8 +102,9 @@ const AddUser = () => {
           🔎
         </button>
       </form>
-
-      {userData ? (
+      {userAdded ? (
+        <h1>{userData.username}, has been added to the List🎇🎇</h1>
+      ) : userData ? (
         <>
           <h1>User:</h1>
           <button style={{ cursor: "pointer" }} onClick={addUserToList}>
